@@ -4,7 +4,7 @@
 MYSQL = True
 
 #largest concurency requests amout
-REQ_AMOUNTS = 10
+REQ_AMOUNTS = 1000000
 
 #############- your config items -########################
 

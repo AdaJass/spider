@@ -2,46 +2,24 @@ import asyncio
 from pyquery import PyQuery as pq
 import config
 
-import json
-if config.MYSQL:
-    import aiomysql
+global n
+n=0
 
-@asyncio.coroutine
-def processData(data):
+async def processData(data,session):
     '''
     data is from the http response in main module.
     '''
-    
-    pass
+    head ='https://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=1&rsv_idx=1&tn=baidu&wd='+data['main']
+    mid ='&oq='+data['helper']
+    tail ='&rsv_pq=9bc4656e000052da&rsv_t=4ccdJn1Xwirq5mlRPDl5gGVL6MXn6pNUusRxjuuY0BSrYbZ6B6FC0hayuDM&rsv_enter=0&rsv_sug3=22&rsv_sug4=1039&rsv_sug=2'
+    url=head+mid+tail
+    global n
+    n=n+1
+    print(n)
+    async with session.get(url) as r:
+        if n%50 == 0:
+            r= await r.text(encoding='utf-8')
+            with open('second.html','w', encoding='utf-8') as f: 
+                f.write(r)
+            
 
-@asyncio.coroutine
-def Xm(data):
-    d = pq(data)
-    d = d('div#dashboard-wrap')
-    ratioList={}
-    for i in range(11):
-        ratioList[d('b').eq(i).text()] = float(d('span').eq(i*2).attr('data-percentage'))
-        pass     
-        
-    print(ratioList)
-    pass
-
-async def Asto(data):
-    data=json.loads(data[13:-1])
-    data=data['data']['ratioList']
-    ratioList={}
-    for x in data:
-        k=x['value'].split(':')
-        ratioList[x['symbol']] = float(k[0][0:-1])
-
-    print(ratioList)
-
-    pass 
-
-async def Calendar(data):
-    d=pq(data)
-    print(data)
-    pass
-
-if __name__ == '__main__':
-    processData('<a>hello</a>') 
